@@ -8,7 +8,8 @@ Minimal, premium and spacious by design: the composition follows
 ribbon as the brand's graphical signature.
 
 - **Stack:** Next.js 16 (App Router, Cache Components) · React 19 · TypeScript · Tailwind CSS 4
-- **Pages:** `/` (home) · `/a-propos` · `/contact` (quote request) · custom 404
+- **Pages:** `/` (home) · `/a-propos` · `/contact` (quote request) · `/dispagaz` (Dispagaz® product
+  landing page) · custom 404
 - **Language:** French (`lang="fr"`, `fr_MA` Open Graph locale)
 
 ---
@@ -96,33 +97,46 @@ Server Action require the Node.js server, so a purely static export is not suppo
 ## Project structure
 
 ```
-├── Bensaid_Mek_Energie_Website_Assets/  Approved brand asset pack (source of truth, untouched)
+├── Bensaid_Mek_Energie_Website_Assets/  Approved Bensaid brand asset pack (source of truth, untouched)
+├── Dispagaz *.png · Bensaid Mék 24_7 LPG Dispenser (1).png
+│                                        Original Dispagaz assets (source of truth, untouched)
 ├── public/                              Static files served as-is (currently empty)
 └── src/
     ├── app/                             Routes (App Router)
-    │   ├── layout.tsx                   Root layout: fonts, metadata, header, footer, JSON-LD
-    │   ├── page.tsx                     Homepage
-    │   ├── a-propos/page.tsx            About page
-    │   ├── contact/page.tsx             Contact & quote page
-    │   ├── contact/actions.ts           Quote Server Action (validation + delivery)
+    │   ├── layout.tsx                   Root layout: fonts, metadata, skip link, JSON-LD
+    │   ├── (bensaid)/                   Corporate pages (route group: URLs unchanged)
+    │   │   ├── layout.tsx               Bensaid header + footer
+    │   │   ├── page.tsx                 Homepage
+    │   │   ├── a-propos/page.tsx        About page
+    │   │   └── contact/page.tsx         Contact & quote page
+    │   ├── dispagaz/                    Dispagaz® product landing page (/dispagaz)
+    │   │   ├── layout.tsx               Dark Dispagaz header + footer
+    │   │   ├── page.tsx                 Landing page + metadata + JSON-LD
+    │   │   └── icon.png · apple-icon.png · opengraph-image.png · twitter-image.png
     │   ├── not-found.tsx                404 page
     │   ├── sitemap.ts · robots.ts       SEO routes
     │   ├── globals.css                  Design tokens (colours, type scale, spacing, motion)
     │   └── icon.png · apple-icon.png · favicon.ico · opengraph-image.png · twitter-image.png
     ├── assets/                          Web-ready raster assets (imported via next/image)
-    │   ├── brand/                       Logo lockups and emblem
-    │   └── images/                      Editorial photography
+    │   ├── brand/                       Bensaid logo lockups and emblem
+    │   ├── images/                      Editorial photography
+    │   └── dispagaz/                    Dispagaz logos (+ white variants) and dispenser photo
     ├── components/
-    │   ├── layout/                      Header (incl. mobile menu), Footer, Logo
+    │   ├── layout/                      Header, Footer, Logo, MenuToggle, useMobileMenu (shared)
     │   ├── sections/                    Hero, ActivitiesGrid, EditorialSplit, Sectors, About,
     │   │                                Values, CTASection
+    │   ├── dispagaz/                    DispagazHeader/Footer/Logo, DispagazHero, DashboardMockup,
+    │   │                                DispagazSwoosh, DispagazSections
     │   ├── graphics/                    HeroRibbon, CtaWave (inline SVG brand graphics)
     │   ├── contact/                     QuoteForm
     │   ├── seo/                         OrganizationJsonLd
-    │   └── ui/                          Button, SectionEyebrow, Icons, Reveal, Parallax, RichText
+    │   └── ui/                          Button, SectionEyebrow, Icons, Reveal, Parallax, RichText,
+    │                                    CurrentYear
     ├── config/company.ts                ⭐ Official company information (single source of truth)
+    ├── config/dispagaz.ts               Dispagaz links (demo, app login, video)
     ├── content/                         All page copy (French), separate from presentation
     └── lib/                             Helpers: company formatting, site URL, metadata, quote logic
+                                         and the quote Server Action (quote-action.ts)
 ```
 
 ## Where company information is configured
@@ -141,6 +155,20 @@ metadata and Organization JSON-LD all read from it.
 
 Page copy (headings, descriptions, sectors, values…) lives in `src/content/`.
 
+### Dispagaz®
+
+`/dispagaz` is the landing page of Dispagaz, the Bensaid Mek Énergie solution for LPG
+distributors. It is reached from the **“Visiter Dispagaz”** button in the homepage hero and from
+the footer.
+
+- **`src/config/dispagaz.ts`** — `demoHref` (where every “Demander une démo” button leads: the
+  quote form with “Dispagaz (démo)” preselected via `/contact?besoin=dispagaz#devis`), and two
+  ⚠️ À COMPLÉTER placeholders: `appUrl` (shows a “Se connecter” link) and `videoUrl` (replaces
+  “Découvrir les solutions” with a “Voir la vidéo” button). Empty values are not displayed.
+- **`src/content/dispagaz.ts`** — all copy of the page.
+- The laptop dashboard in the hero is built in HTML/CSS (`DashboardMockup.tsx`); its figures are
+  illustrative and labelled “Données d’exemple” in the interface.
+
 ## Where visual assets are stored
 
 | Location                              | Contents                                                                 |
@@ -150,6 +178,9 @@ Page copy (headings, descriptions, sectors, values…) lives in `src/content/`.
 | `src/assets/images/`                  | Web derivatives of the photographs.                                      |
 | `src/components/graphics/`            | `HeroRibbon.tsx` and `CtaWave.tsx`: inline copies of `graphics/*.svg`.   |
 | `src/app/`                            | Favicon, app icons and the social sharing image.                         |
+| Repository root `Dispagaz *.png`      | Original Dispagaz logos and the 24/7 dispenser photo.                    |
+| `src/assets/dispagaz/`                | Web derivatives of the Dispagaz assets (see below).                      |
+| `src/app/dispagaz/`                   | Dispagaz app icons and social sharing image.                             |
 
 About the web derivatives (originals are never modified):
 
@@ -159,6 +190,8 @@ About the web derivatives (originals are never modified):
 - **Photographs** — cropped ~22 px on each side to remove the white rounded corners baked into the
   source files (rounding is applied in CSS). `next/image` serves AVIF/WebP at the right size with a
   blur placeholder.
+- **Dispagaz logos** — trimmed; `*-white.png` variants for dark backgrounds turn only the charcoal
+  lettering/D white (orange flame untouched), matching the reversed logo of the Dispagaz design.
 - **SVG graphics** — `hero-ribbon.svg` and `cta-wave.svg` are inlined as React components (same
   paths and gradients, namespaced IDs). If a source SVG changes, mirror the change in
   `src/components/graphics/`.
@@ -169,6 +202,9 @@ About the web derivatives (originals are never modified):
   `#FF6B00`, teal `#0B8F84`, light teal `#19B6A7`, off-white `#FAFAF8`, light gray `#F5F5F3`,
   border `#E7E8E6`. Tailwind's default palette is disabled in `globals.css`, so no other colour
   (and no blue) can be used by accident. Text greys derive from charcoal and meet WCAG AA.
+- **Dispagaz:** charcoal surfaces (`#101214`–`#171B1D`) with the brand oranges. Orange buttons use
+  charcoal text (6:1 contrast; white on this orange would fail WCAG AA), and small orange text on
+  light backgrounds uses the darker `--color-orange-text` (`#B54A00`).
 - **Typography:** Montserrat (headings, navigation, buttons) and Source Sans 3 (body, forms),
   self-hosted at build time by `next/font`.
 - **Motion:** subtle 450 ms reveals for below-the-fold content, a very slight desktop parallax on

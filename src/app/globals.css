@@ -37,6 +37,10 @@
   --color-error: #b54a00; /* 5.3:1 on white */
   --color-success: #0a7d73; /* 5.0:1 on white */
 
+  /* Dispagaz® (product brand: charcoal + orange) */
+  --color-night: #101214; /* deepest charcoal for dark product surfaces */
+  --color-orange-text: #b54a00; /* orange for small text on light backgrounds (5.3:1) */
+
   --radius-card: 18px;
   --radius-media: 22px;
   --radius-banner: 28px;

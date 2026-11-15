@@ -1,13 +1,13 @@
 "use client";
 
 import { useActionState, useEffect, useRef, useState, type FormEvent } from "react";
-import { submitQuote } from "@/app/contact/actions";
+import { submitQuote } from "@/lib/quote-action";
 import { ButtonArrow, buttonClasses } from "@/components/ui/Button";
-import { activities } from "@/content/activities";
 import { cn } from "@/lib/cn";
 import {
   HONEYPOT_FIELD,
   QUOTE_FIELDS,
+  QUOTE_NEEDS,
   initialQuoteState,
   readQuoteValues,
   validateQuote,
@@ -65,6 +65,7 @@ export function QuoteForm() {
   const [dismissedAttempt, setDismissedAttempt] = useState(-1);
   const summaryRef = useRef<HTMLDivElement>(null);
   const successRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const serverErrors: QuoteErrors = state.status === "invalid" ? state.errors : {};
   const errors: QuoteErrors =
@@ -78,6 +79,17 @@ export function QuoteForm() {
     if (state.status === "success") successRef.current?.focus();
     else if (state.status === "invalid" || state.status === "error") summaryRef.current?.focus();
   }, [state]);
+
+  // Preselect the need from the URL, e.g. /contact?besoin=dispagaz (Dispagaz "Demander une démo").
+  useEffect(() => {
+    const form = formRef.current;
+    const besoin = new URLSearchParams(window.location.search).get("besoin");
+    if (!form || !besoin || form.querySelector('input[name="need"]:checked')) return;
+    const input = form.querySelector<HTMLInputElement>(
+      `input[name="need"][value="${CSS.escape(besoin)}"]`,
+    );
+    if (input) input.checked = true;
+  }, [state.attempt]);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     const form = event.currentTarget;
@@ -127,6 +139,7 @@ export function QuoteForm() {
 
   return (
     <form
+      ref={formRef}
       key={state.attempt}
       action={formAction}
       onSubmit={handleSubmit}
@@ -252,9 +265,9 @@ export function QuoteForm() {
           </span>
         </legend>
         <div className="flex flex-wrap gap-2.5">
-          {activities.map((activity) => (
+          {QUOTE_NEEDS.map((need) => (
             <label
-              key={activity.id}
+              key={need.id}
               className={cn(
                 "inline-flex h-11 cursor-pointer items-center rounded-full border bg-white px-4.5 text-[0.9375rem] text-ink-soft transition-colors duration-200 select-none",
                 "hover:border-ink-muted has-checked:border-charcoal has-checked:bg-charcoal has-checked:text-white",
@@ -265,11 +278,11 @@ export function QuoteForm() {
               <input
                 type="radio"
                 name="need"
-                value={activity.id}
-                defaultChecked={values?.need === activity.id}
+                value={need.id}
+                defaultChecked={values?.need === need.id}
                 className="sr-only"
               />
-              {activity.title}
+              {need.label}
             </label>
           ))}
         </div>

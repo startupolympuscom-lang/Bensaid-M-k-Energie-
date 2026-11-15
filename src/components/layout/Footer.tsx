@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { cacheLife } from "next/cache";
 import { Logo } from "@/components/layout/Logo";
+import { CurrentYear } from "@/components/ui/CurrentYear";
 import { MailIcon, PhoneIcon, PinIcon } from "@/components/ui/Icons";
 import { company } from "@/config/company";
 import { mainNavigation } from "@/content/navigation";
@@ -11,12 +11,6 @@ import {
   getPhones,
   getSocialLinks,
 } from "@/lib/company";
-
-async function CurrentYear() {
-  "use cache";
-  cacheLife("days");
-  return <>{new Date().getFullYear()}</>;
-}
 
 const SOCIAL_LABELS: Record<string, string> = {
   facebook: "Facebook",
@@ -57,6 +51,14 @@ export function Footer() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <Link
+                  href="/dispagaz"
+                  className="text-[0.9375rem] text-ink-muted transition-colors duration-200 hover:text-ink"
+                >
+                  Dispagaz
+                </Link>
+              </li>
             </ul>
           </nav>
 

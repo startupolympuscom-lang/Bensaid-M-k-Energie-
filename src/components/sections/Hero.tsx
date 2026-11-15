@@ -1,5 +1,8 @@
+import Image from "next/image";
+import Link from "next/link";
+import dispagazMark from "@/assets/dispagaz/dispagaz-mark.png";
 import { HeroRibbon } from "@/components/graphics/HeroRibbon";
-import { ButtonLink } from "@/components/ui/Button";
+import { ButtonArrow, ButtonLink, buttonClasses } from "@/components/ui/Button";
 import { Parallax } from "@/components/ui/Parallax";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 
@@ -9,9 +12,18 @@ type HeroProps = {
   description: string;
   primaryCta: { label: string; href: string };
   secondaryCta: { label: string; href: string };
+  /** Link to the Dispagaz® product page, shown with the Dispagaz mark. */
+  productCta?: { label: string; href: string };
 };
 
-export function Hero({ eyebrow, titleLines, description, primaryCta, secondaryCta }: HeroProps) {
+export function Hero({
+  eyebrow,
+  titleLines,
+  description,
+  primaryCta,
+  secondaryCta,
+  productCta,
+}: HeroProps) {
   return (
     <section
       aria-labelledby="hero-title"
@@ -39,6 +51,13 @@ export function Hero({ eyebrow, titleLines, description, primaryCta, secondaryCt
             <ButtonLink href={secondaryCta.href} variant="secondary">
               {secondaryCta.label}
             </ButtonLink>
+            {productCta ? (
+              <Link href={productCta.href} className={buttonClasses("secondary")}>
+                <Image src={dispagazMark} alt="" sizes="24px" className="-ml-1.5 h-[22px] w-auto" />
+                <span>{productCta.label}</span>
+                <ButtonArrow />
+              </Link>
+            ) : null}
           </div>
         </div>
       </div>

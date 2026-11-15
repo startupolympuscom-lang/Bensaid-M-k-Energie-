@@ -1,4 +1,4 @@
-import { activities, type ActivityId } from "@/content/activities";
+import { activities } from "@/content/activities";
 
 /**
  * Quote request — shared validation used both in the browser (instant
@@ -22,7 +22,13 @@ export const initialQuoteState: QuoteState = { status: "idle", attempt: 0 };
 /** Hidden field that real users never fill in (basic spam protection). */
 export const HONEYPOT_FIELD = "site_web";
 
-const NEED_IDS = activities.map((a) => a.id) as string[];
+/** Options of the "Type de besoin" field: the four activities + a Dispagaz demo request. */
+export const QUOTE_NEEDS: { id: string; label: string }[] = [
+  ...activities.map((a) => ({ id: a.id as string, label: a.title })),
+  { id: "dispagaz", label: "Dispagaz (démo)" },
+];
+
+const NEED_IDS = QUOTE_NEEDS.map((n) => n.id);
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const PHONE_RE = /^[+()\d\s.-]+$/;
@@ -71,5 +77,5 @@ export function validateQuote(values: QuoteValues): QuoteErrors {
 }
 
 export function needLabel(id: string): string {
-  return activities.find((a) => a.id === (id as ActivityId))?.title ?? id;
+  return QUOTE_NEEDS.find((n) => n.id === id)?.label ?? id;
 }

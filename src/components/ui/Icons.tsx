@@ -46,6 +46,15 @@ export function MailIcon(props: IconProps) {
   );
 }
 
+export function PlayIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <circle cx="12" cy="12" r="9.5" />
+      <path d="m10 8.5 5 3.5-5 3.5z" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
 export function PinIcon(props: IconProps) {
   return (
     <svg {...base} {...props}>

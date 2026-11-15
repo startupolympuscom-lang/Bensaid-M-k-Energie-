@@ -3,7 +3,7 @@ import type { ComponentProps, ReactNode } from "react";
 import { ArrowRightIcon } from "@/components/ui/Icons";
 import { cn } from "@/lib/cn";
 
-type Variant = "primary" | "secondary" | "light";
+type Variant = "primary" | "secondary" | "light" | "accent" | "outlineDark";
 type Size = "sm" | "md";
 
 const variants: Record<Variant, string> = {
@@ -11,6 +11,10 @@ const variants: Record<Variant, string> = {
   secondary:
     "border border-charcoal/18 bg-white/60 text-ink hover:border-charcoal/45 hover:bg-white",
   light: "bg-white text-ink hover:bg-offwhite focus-visible:outline-teal-light",
+  // Dispagaz: orange with charcoal text (6:1 — white on this orange would fail AA)
+  accent: "bg-orange-deep text-charcoal hover:bg-orange focus-visible:outline-orange",
+  outlineDark:
+    "border border-white/25 text-white hover:border-white/60 hover:bg-white/5 focus-visible:outline-orange",
 };
 
 const sizes: Record<Size, string> = {
