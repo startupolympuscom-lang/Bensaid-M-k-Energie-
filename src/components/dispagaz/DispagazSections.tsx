@@ -46,9 +46,14 @@ export function DispagazSolutions() {
                 <p className="mt-3 text-base leading-relaxed text-ink-muted xl:text-[1.0625rem]">
                   {item.description}
                 </p>
+                {item.note ? (
+                  <p className="mt-3 mb-6 text-sm leading-snug font-medium text-orange-text">
+                    {item.note}
+                  </p>
+                ) : null}
                 <span
                   aria-hidden="true"
-                  className="mt-auto block h-[3px] w-8 rounded-full bg-orange-deep transition-[width] duration-300 ease-soft group-hover:w-12"
+                  className="mt-auto block h-[3px] w-8 shrink-0 rounded-full bg-orange-deep transition-[width] duration-300 ease-soft group-hover:w-12"
                 />
               </Link>
             </Reveal>

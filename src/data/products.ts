@@ -1,0 +1,111 @@
+import type { Product } from "@/types/dispagaz";
+
+/**
+ * Demo LPG catalog.
+ *
+ * ⚠️ Brands are FICTIONAL placeholders and prices are demonstration values.
+ * Replace this file (or productService) with the real catalog / API.
+ */
+export const products: Product[] = [
+  {
+    id: "atlas-butane-3",
+    category: "butane",
+    brand: "Atlas Gaz",
+    name: "Butane 3 kg",
+    size: "3 kg",
+    weightKg: 3,
+    price: 1500,
+    deposit: 8000,
+    image: "bottle",
+    availability: "in_stock",
+  },
+  {
+    id: "atlas-butane-6",
+    category: "butane",
+    brand: "Atlas Gaz",
+    name: "Butane 6 kg",
+    size: "6 kg",
+    weightKg: 6,
+    price: 3000,
+    deposit: 12000,
+    image: "bottle",
+    availability: "in_stock",
+  },
+  {
+    id: "atlas-butane-12",
+    category: "butane",
+    brand: "Atlas Gaz",
+    name: "Butane 12 kg",
+    size: "12 kg",
+    weightKg: 12,
+    price: 5500,
+    deposit: 20000,
+    image: "bottle",
+    availability: "in_stock",
+  },
+  {
+    id: "oasis-butane-6",
+    category: "butane",
+    brand: "Oasis Gaz",
+    name: "Butane 6 kg",
+    size: "6 kg",
+    weightKg: 6,
+    price: 2900,
+    deposit: 12000,
+    image: "bottle",
+    availability: "in_stock",
+  },
+  {
+    id: "oasis-butane-12",
+    category: "butane",
+    brand: "Oasis Gaz",
+    name: "Butane 12 kg",
+    size: "12 kg",
+    weightKg: 12,
+    price: 5400,
+    deposit: 20000,
+    image: "bottle",
+    availability: "limited",
+  },
+  {
+    id: "medina-butane-12",
+    category: "butane",
+    brand: "Médina Gaz",
+    name: "Butane 12 kg",
+    size: "12 kg",
+    weightKg: 12,
+    price: 5500,
+    deposit: 20000,
+    image: "bottle",
+    availability: "in_stock",
+  },
+  {
+    id: "atlas-propane-13",
+    category: "propane",
+    brand: "Atlas Gaz",
+    name: "Propane 13 kg",
+    size: "13 kg",
+    weightKg: 13,
+    price: 9500,
+    deposit: 25000,
+    image: "bottle",
+    availability: "in_stock",
+  },
+  {
+    id: "oasis-propane-35",
+    category: "propane",
+    brand: "Oasis Gaz",
+    name: "Propane 35 kg",
+    size: "35 kg",
+    weightKg: 35,
+    price: 26000,
+    deposit: 45000,
+    image: "bottle",
+    availability: "out_of_stock",
+  },
+];
+
+export const productCategories = [
+  { id: "butane", label: "Butane" },
+  { id: "propane", label: "Propane" },
+] as const;

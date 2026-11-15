@@ -41,6 +41,24 @@
   --color-night: #101214; /* deepest charcoal for dark product surfaces */
   --color-orange-text: #b54a00; /* orange for small text on light backgrounds (5.3:1) */
 
+  /* Dispagaz customer web app — approved Dispagaz identity */
+  --color-dz-ink: #0d0d0d; /* primary charcoal */
+  --color-dz-ink-soft: #1f1f1f;
+  --color-dz-orange: #ff7a00; /* primary orange — actions & accents */
+  --color-dz-orange-hover: #ff8c1f;
+  --color-dz-orange-strong: #d96500; /* focus rings & indicators (3.6:1 on white) */
+  --color-dz-orange-ink: #a84a00; /* orange text on light surfaces (5.8:1) */
+  --color-dz-orange-tint: #fff4ea;
+  --color-dz-teal: #006d66; /* secondary accent (6.2:1 on white) */
+  --color-dz-teal-tint: #e8f3f2;
+  --color-dz-gray: #f2f2f2; /* light gray */
+  --color-dz-surface: #f7f7f6; /* neutral surface */
+  --color-dz-line: #e4e4e4; /* borders */
+  --color-dz-muted: #5c5d5e; /* secondary text (6.6:1 on white) */
+  --color-dz-subtle: #6f7071; /* tertiary text (5.0:1 on white) */
+  --color-dz-field: #8c8d8e; /* form field borders (3.3:1) */
+  --color-dz-danger: #b3261e;
+
   --radius-card: 18px;
   --radius-media: 22px;
   --radius-banner: 28px;
@@ -332,5 +350,86 @@
     transition: none !important;
     animation: none !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Dispagaz ecosystem (landing page + customer web app)                */
+/* ------------------------------------------------------------------ */
+
+:root {
+  --font-satoshi-stack: "Satoshi", Inter, Arial, sans-serif;
+}
+
+@layer components {
+  /* Re-points every font token of the subtree to Satoshi (headings + body). */
+  .dz-theme {
+    --font-montserrat: var(--font-satoshi-stack);
+    --font-source-sans: var(--font-satoshi-stack);
+    --font-heading: var(--font-satoshi-stack);
+    --font-sans: var(--font-satoshi-stack);
+    font-family: var(--font-satoshi-stack);
+  }
+
+  /* Customer app: calm neutral canvas, orange focus. */
+  .dz-app {
+    background-color: var(--color-white);
+    color: var(--color-dz-ink);
+  }
+
+  .dz-app :focus-visible {
+    outline: 2px solid var(--color-dz-orange-strong);
+    outline-offset: 2px;
+  }
+
+  .dz-safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* Leaves room for the fixed mobile bottom navigation. */
+  .dz-page-pad {
+    padding-bottom: calc(6rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  @media (min-width: 1024px) {
+    .dz-page-pad {
+      padding-bottom: 4rem;
+    }
+  }
+}
+
+@keyframes dz-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(-2%, 1.5%, 0) scale(1.03);
+  }
+}
+
+.dz-drift {
+  animation: dz-drift 14s ease-in-out infinite;
+}
+
+@keyframes dz-step-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.dz-step-in {
+  animation: dz-step-in 260ms var(--ease-soft) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dz-drift,
+  .dz-step-in {
+    animation: none;
   }
 }

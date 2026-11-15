@@ -28,18 +28,21 @@ export const dispagazSolutions = {
       description: "Gestion complète de votre activité.",
       href: "/dispagaz#fonctionnalites",
       featured: true,
+      note: "",
     },
     {
       title: "Application mobile",
-      description: "Pour vos équipes terrain.",
-      href: "/dispagaz#fonctionnalites",
+      description: "Commandez votre GPL en livraison ou en point Dispagaz.",
+      href: "/dispagaz/app",
       featured: false,
+      note: "Bientôt sur l’App Store et Google Play",
     },
     {
       title: "Distribution automatique",
       description: "Distribution de bouteilles 24h/24, 7j/7.",
       href: "/dispagaz#distribution",
       featured: false,
+      note: "",
     },
   ],
 };
@@ -58,7 +61,8 @@ export const dispagazFeatures = {
     { title: "Consignations", description: "Gérez les consignations de bouteilles simplement." },
     {
       title: "Application mobile",
-      description: "Vos équipes terrain restent connectées à l’activité, où qu’elles soient.",
+      description:
+        "Vos clients commandent leur GPL et suivent leur livraison depuis l’application.",
     },
   ],
 };
