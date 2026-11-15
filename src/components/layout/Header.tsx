@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
 import { Logo } from "@/components/layout/Logo";
+import { MenuToggle } from "@/components/layout/MenuToggle";
+import { useMobileMenu, useScrolled } from "@/components/layout/useMobileMenu";
 import { ButtonLink } from "@/components/ui/Button";
 import { PhoneIcon } from "@/components/ui/Icons";
 import { mainNavigation, quoteCta, type NavItem } from "@/content/navigation";
@@ -15,82 +15,10 @@ function isCurrent(item: NavItem, pathname: string) {
   return item.match === "/" ? pathname === "/" : pathname.startsWith(item.match);
 }
 
-const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
-
 export function Header() {
-  const pathname = usePathname();
-  const [scrolled, setScrolled] = useState(false);
-  const [open, setOpen] = useState(false);
-  const toggleRef = useRef<HTMLButtonElement>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
+  const scrolled = useScrolled();
+  const { open, setOpen, toggleRef, panelRef, panelStyle, pathname } = useMobileMenu();
   const phones = getPhones();
-
-  const close = useCallback((restoreFocus = false) => {
-    setOpen(false);
-    if (restoreFocus) toggleRef.current?.focus();
-  }, []);
-
-  // Light translucent background + hairline once the page is scrolled.
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  // Close the menu after navigating to another page (incl. browser back/forward).
-  const [lastPathname, setLastPathname] = useState(pathname);
-  if (pathname !== lastPathname) {
-    setLastPathname(pathname);
-    setOpen(false);
-  }
-
-  // Close the mobile menu if the viewport grows to desktop size.
-  useEffect(() => {
-    const mq = window.matchMedia("(min-width: 1024px)");
-    const onChange = () => mq.matches && setOpen(false);
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
-  }, []);
-
-  // Scroll lock, Escape to close, focus trap while the menu is open.
-  useEffect(() => {
-    if (!open) return;
-    const root = document.documentElement;
-    const previousOverflow = root.style.overflow;
-    root.style.overflow = "hidden";
-
-    const panel = panelRef.current;
-    // Next frame: the panel's visibility has switched, so it can take focus.
-    const frame = window.requestAnimationFrame(() => {
-      panel?.querySelector<HTMLElement>(FOCUSABLE)?.focus();
-    });
-
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        event.preventDefault();
-        close(true);
-        return;
-      }
-      if (event.key !== "Tab" || !panel || !toggleRef.current) return;
-      const items = [toggleRef.current, ...panel.querySelectorAll<HTMLElement>(FOCUSABLE)];
-      const first = items[0];
-      const last = items[items.length - 1];
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first.focus();
-      }
-    };
-    document.addEventListener("keydown", onKeyDown);
-    return () => {
-      window.cancelAnimationFrame(frame);
-      root.style.overflow = previousOverflow;
-      document.removeEventListener("keydown", onKeyDown);
-    };
-  }, [open, close]);
 
   return (
     <>
@@ -139,30 +67,13 @@ export function Header() {
               </ButtonLink>
             </div>
 
-            <button
-              ref={toggleRef}
-              type="button"
-              className="-mr-2 inline-flex h-11 w-11 items-center justify-center rounded-full text-ink lg:hidden"
-              aria-expanded={open}
-              aria-controls="menu-mobile"
-              aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
-              onClick={() => setOpen((v) => !v)}
-            >
-              <span aria-hidden="true" className="relative block h-3 w-[22px]">
-                <span
-                  className={cn(
-                    "absolute left-0 block h-[1.75px] w-full rounded-full bg-current transition-transform duration-300 ease-soft",
-                    open ? "top-[5px] rotate-45" : "top-0",
-                  )}
-                />
-                <span
-                  className={cn(
-                    "absolute left-0 block h-[1.75px] w-full rounded-full bg-current transition-transform duration-300 ease-soft",
-                    open ? "top-[5px] -rotate-45" : "top-[10px]",
-                  )}
-                />
-              </span>
-            </button>
+            <MenuToggle
+              open={open}
+              onToggle={() => setOpen((v) => !v)}
+              controls="menu-mobile"
+              buttonRef={toggleRef}
+              className="text-ink"
+            />
           </div>
         </div>
       </header>
@@ -177,13 +88,7 @@ export function Header() {
           "fixed inset-x-0 top-(--header-h) bottom-0 z-40 overflow-y-auto overscroll-contain bg-white lg:hidden",
           open ? "visible translate-y-0 opacity-100" : "invisible -translate-y-2 opacity-0",
         )}
-        style={{
-          // Visibility flips instantly on open (so focus can move in right
-          // away) and only after the fade-out on close.
-          transition: open
-            ? "opacity 300ms var(--ease-soft), transform 300ms var(--ease-soft), visibility 0s"
-            : "opacity 300ms var(--ease-soft), transform 300ms var(--ease-soft), visibility 0s linear 300ms",
-        }}
+        style={panelStyle}
       >
         <div className="container-page flex min-h-full flex-col pt-6 pb-10">
           <nav aria-label="Navigation mobile">

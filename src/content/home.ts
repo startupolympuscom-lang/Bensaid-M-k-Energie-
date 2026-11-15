@@ -7,6 +7,7 @@ export const hero = {
     "Distribution de GPL, gaz industriels et solutions énergétiques pour les particuliers, les professionnels et les industries.",
   primaryCta: { label: "Nos activités", href: "/#activites" },
   secondaryCta: { label: "Nous contacter", href: "/contact" },
+  productCta: { label: "Visiter Dispagaz", href: "/dispagaz" },
 };
 
 export const activitiesSection = {

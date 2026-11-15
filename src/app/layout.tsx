@@ -1,7 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Montserrat, Source_Sans_3 } from "next/font/google";
-import { Footer } from "@/components/layout/Footer";
-import { Header } from "@/components/layout/Header";
 import { OrganizationJsonLd } from "@/components/seo/OrganizationJsonLd";
 import { company } from "@/config/company";
 import { sharedOpenGraph } from "@/lib/metadata";
@@ -83,11 +81,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         >
           Aller au contenu
         </a>
-        <Header />
-        <main id="contenu" tabIndex={-1} className="flex-1 outline-none">
-          {children}
-        </main>
-        <Footer />
+        {/* Each site section (Bensaid corporate pages, Dispagaz product page)
+            provides its own header, <main id="contenu"> and footer. */}
+        {children}
         <OrganizationJsonLd />
       </body>
     </html>
