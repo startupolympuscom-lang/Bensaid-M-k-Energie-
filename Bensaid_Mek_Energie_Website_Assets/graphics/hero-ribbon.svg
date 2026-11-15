@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 950">
+<defs>
+  <linearGradient id="orange" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#FFD14A"/>
+    <stop offset="0.45" stop-color="#FF9800"/>
+    <stop offset="1" stop-color="#FF6B00"/>
+  </linearGradient>
+  <linearGradient id="teal" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#19B6A7"/>
+    <stop offset="0.5" stop-color="#078F83"/>
+    <stop offset="1" stop-color="#175C58"/>
+  </linearGradient>
+  <linearGradient id="charcoal" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#596064"/>
+    <stop offset="0.45" stop-color="#2B3033"/>
+    <stop offset="1" stop-color="#121517"/>
+  </linearGradient>
+  <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+    <feGaussianBlur stdDeviation="22"/>
+  </filter>
+</defs>
+<!-- subtle shadow / atmospheric fade -->
+<path d="M430,905 C590,690 735,565 895,455 C1020,370 1115,250 1200,72"
+      fill="none" stroke="#CBD0D3" stroke-width="78" opacity=".16" filter="url(#soft)"/>
+<!-- orange ribbon -->
+<path d="M418,667 C460,460 585,348 760,264 C928,184 1085,116 1200,0
+         C1164,180 1086,314 938,402 C765,505 575,542 418,667 Z"
+      fill="url(#orange)"/>
+<!-- teal ribbon -->
+<path d="M445,790 C498,620 636,515 810,427 C974,344 1102,266 1200,150
+         C1168,326 1075,472 933,559 C774,655 596,683 445,790 Z"
+      fill="url(#teal)"/>
+<!-- charcoal ribbon -->
+<path d="M500,950 C586,784 726,699 879,627 C1027,557 1122,483 1200,397
+         L1200,620 C1115,700 1017,756 902,802 C758,859 626,890 500,950 Z"
+      fill="url(#charcoal)"/>
+</svg>

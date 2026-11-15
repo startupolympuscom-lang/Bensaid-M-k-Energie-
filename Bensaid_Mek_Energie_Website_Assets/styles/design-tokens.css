@@ -1,0 +1,24 @@
+/* Bensaid Mek Énergie — approved website design tokens */
+:root {
+  --bme-charcoal: #171B1D;
+  --bme-charcoal-soft: #2B3033;
+  --bme-orange: #FF9500;
+  --bme-orange-deep: #FF6B00;
+  --bme-teal: #0B8F84;
+  --bme-teal-light: #19B6A7;
+  --bme-off-white: #FAFAF8;
+  --bme-light-gray: #F5F5F3;
+  --bme-mid-gray: #6F7477;
+  --bme-border: #E7E8E6;
+
+  --bme-radius-card: 18px;
+  --bme-radius-button: 999px;
+  --bme-content-max: 1240px;
+  --bme-section-space: clamp(80px, 9vw, 144px);
+}
+
+/* Typography:
+   Headings: Montserrat 600–700
+   Body/UI: Source Sans 3 400–600
+   Do not bundle font files in the repo; load via CSS/provider.
+*/
