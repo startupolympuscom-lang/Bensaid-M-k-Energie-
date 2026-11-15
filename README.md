@@ -9,7 +9,7 @@ ribbon as the brand's graphical signature.
 
 - **Stack:** Next.js 16 (App Router, Cache Components) · React 19 · TypeScript · Tailwind CSS 4
 - **Pages:** `/` (home) · `/a-propos` · `/contact` (quote request) · `/dispagaz` (Dispagaz® product
-  landing page) · custom 404
+  landing page) · `/dispagaz/app` (Dispagaz customer web app — demo) · custom 404
 - **Language:** French (`lang="fr"`, `fr_MA` Open Graph locale)
 
 ---
@@ -109,9 +109,14 @@ Server Action require the Node.js server, so a purely static export is not suppo
     │   │   ├── page.tsx                 Homepage
     │   │   ├── a-propos/page.tsx        About page
     │   │   └── contact/page.tsx         Contact & quote page
-    │   ├── dispagaz/                    Dispagaz® product landing page (/dispagaz)
-    │   │   ├── layout.tsx               Dark Dispagaz header + footer
-    │   │   ├── page.tsx                 Landing page + metadata + JSON-LD
+    │   ├── dispagaz/                    Dispagaz® ecosystem
+    │   │   ├── layout.tsx               Satoshi typeface (Fontshare API) for the whole subtree
+    │   │   ├── (site)/                  Landing page /dispagaz (dark header + footer, JSON-LD)
+    │   │   ├── app/                     Customer web app /dispagaz/app (demo)
+    │   │   │   ├── (auth)/              connexion · inscription · bienvenue (onboarding)
+    │   │   │   └── (main)/              accueil · commander (+ confirmation) · commandes/[id] ·
+    │   │   │                            portefeuille (+ recharger) · points · adresses · profil ·
+    │   │   │                            notifications — wrapped in the AppShell
     │   │   └── icon.png · apple-icon.png · opengraph-image.png · twitter-image.png
     │   ├── not-found.tsx                404 page
     │   ├── sitemap.ts · robots.ts       SEO routes
@@ -132,11 +137,21 @@ Server Action require the Node.js server, so a purely static export is not suppo
     │   ├── seo/                         OrganizationJsonLd
     │   └── ui/                          Button, SectionEyebrow, Icons, Reveal, Parallax, RichText,
     │                                    CurrentYear
+    │   └── app/                         Web app UI kit: AppShell (Sidebar, MobileNavigation,
+    │                                    AppHeader), Button, Field (Input/Select/Toggle…), Overlay
+    │                                    (Modal/Drawer), Toast, States, ChoicePanel, BottleImage
+    ├── features/                        Web app features (auth, profile, wallet, orders, delivery,
+    │                                    distributors, home, notifications)
+    ├── services/                        Web app MOCK services (auth, profile, wallet, payment, order,
+    │                                    product, distributor, notification, demo) + storage layer
+    ├── types/dispagaz.ts                Web app domain types
+    ├── data/                            Web app mock data (products, distributors, config, seed)
     ├── config/company.ts                ⭐ Official company information (single source of truth)
     ├── config/dispagaz.ts               Dispagaz links (demo, app login, video)
     ├── content/                         All page copy (French), separate from presentation
     └── lib/                             Helpers: company formatting, site URL, metadata, quote logic
-                                         and the quote Server Action (quote-action.ts)
+                                         and Server Action; lib/dispagaz: app formatting, labels,
+                                         routes and the useDemo store hook
 ```
 
 ## Where company information is configured
@@ -162,12 +177,67 @@ distributors. It is reached from the **“Visiter Dispagaz”** button in the ho
 the footer.
 
 - **`src/config/dispagaz.ts`** — `demoHref` (where every “Demander une démo” button leads: the
-  quote form with “Dispagaz (démo)” preselected via `/contact?besoin=dispagaz#devis`), and two
-  ⚠️ À COMPLÉTER placeholders: `appUrl` (shows a “Se connecter” link) and `videoUrl` (replaces
-  “Découvrir les solutions” with a “Voir la vidéo” button). Empty values are not displayed.
+  quote form with “Dispagaz (démo)” preselected via `/contact?besoin=dispagaz#devis`), `appUrl`
+  (the header’s “Se connecter”, pointing to the web app) and a ⚠️ À COMPLÉTER `videoUrl`
+  placeholder (replaces “Découvrir les solutions” with “Voir la vidéo”; hidden while empty).
 - **`src/content/dispagaz.ts`** — all copy of the page.
 - The laptop dashboard in the hero is built in HTML/CSS (`DashboardMockup.tsx`); its figures are
   illustrative and labelled “Données d’exemple” in the interface.
+- The **“Application mobile”** card opens the customer web app and states that the native app is
+  coming soon to the App Store and Google Play.
+
+## Dispagaz customer web app (demo)
+
+`/dispagaz/app` is the authenticated customer application: account, onboarding, profile and
+addresses, Dispagaz wallet, LPG ordering (home delivery or Point Dispagaz pickup), payment,
+tracking, distributor pickup with empty-bottle exchange, and notifications. It is reached from
+the landing page (“Application mobile” card, “Se connecter”). It is excluded from search engines.
+
+### Demo mode
+
+- **Sign-in:** any valid-looking email and a password of 4+ characters signs in; “Continuer avec
+  Google” is simulated (`data/google-demo-account.ts`). First sign-in leads to onboarding.
+- **Persistence:** everything is stored in the browser (`localStorage`; the session goes to
+  `sessionStorage` when “Se souvenir de moi” is off) and survives reloads. Profile → “Réinitialiser
+  les données de démonstration” wipes it.
+- **Demo history:** after onboarding, each account receives two past orders and wallet movements
+  ending on a 350,00 MAD balance (`data/demo-seed.ts`).
+- **Payments:** `services/paymentService.ts` is a mock. Card numbers are only validated
+  structurally (any well-formed card works, e.g. `4242 4242 4242 4242`) and never stored or sent —
+  only the last 4 digits are kept. No real payment provider is integrated.
+- **Simulations:** order tracking has a “Simuler l’étape suivante” control; pickup orders simulate
+  terminal payment, the empty-bottle deposit (`emptyBottleReturned = true`) and collection.
+- **Catalog & points:** brands in `data/products.ts` are fictional placeholders and prices are
+  demonstration values; Points Dispagaz in `data/distributors.ts` are demo locations. The map is a
+  stylised demo map.
+
+### Architecture (replacing the mocks)
+
+The UI never touches storage directly: it calls the services in `src/services/` (async, returning
+`{ ok, data | error }` like an API) and reads state through `useAccount()` / `useDemoState()`
+(`lib/dispagaz/useDemo.ts`, a `useSyncExternalStore` over `services/storage.ts`).
+
+| Concern               | Today (mock)                         | Later                                         |
+| --------------------- | ------------------------------------ | --------------------------------------------- |
+| `authService`         | Any email/password, simulated Google | Supabase / Auth0 / Firebase / Auth.js OAuth   |
+| `profileService`      | Local profile & addresses            | User API (e.g. Supabase/PostgreSQL), SMS OTP  |
+| `walletService`       | Local ledger in centimes             | Wallet ledger / payment gateway               |
+| `paymentService`      | Simulated card, COD, terminal        | Server-side payment provider                  |
+| `orderService`        | Local orders & status simulation     | Orders API, ERP Dispagaz, delivery/driver app |
+| `distributorService`  | `data/distributors.ts` + local stock | Maps (Google Maps/Mapbox) + machine APIs      |
+| `productService`      | `data/products.ts`                   | Catalog / pricing API                         |
+| `notificationService` | In-app list                          | Push notifications / SMS                      |
+
+Amounts are integers in **centimes** (`formatMAD()` renders `350,00 MAD`). Demo settings (delivery
+fee, reservation time, top-up limits, latency) live in `data/config.ts`.
+
+### Typeface
+
+The Dispagaz ecosystem uses **Satoshi**. It is distributed under the ITF Free Font License, which
+does not allow sharing the font files through a public repository, so it is loaded from the
+official Fontshare API (`src/app/dispagaz/layout.tsx`) with `Inter, Arial, sans-serif` as fallback.
+To self-host it instead (allowed for your own websites), download it from fontshare.com into a
+non-public location and serve it with `next/font/local`.
 
 ## Where visual assets are stored
 
@@ -205,6 +275,10 @@ About the web derivatives (originals are never modified):
 - **Dispagaz:** charcoal surfaces (`#101214`–`#171B1D`) with the brand oranges. Orange buttons use
   charcoal text (6:1 contrast; white on this orange would fail WCAG AA), and small orange text on
   light backgrounds uses the darker `--color-orange-text` (`#B54A00`).
+- **Dispagaz web app:** approved identity tokens `--color-dz-*` — charcoal `#0D0D0D`, orange
+  `#FF7A00` (actions), teal `#006D66` (secondary/positive), white, light gray `#F2F2F2`, surface
+  `#F7F7F6`, border `#E4E4E4`. Orange buttons use charcoal text (7.4:1); orange focus rings use
+  `#D96500` (3.6:1) and small orange text `#A84A00` (5.8:1) for WCAG AA.
 - **Typography:** Montserrat (headings, navigation, buttons) and Source Sans 3 (body, forms),
   self-hosted at build time by `next/font`.
 - **Motion:** subtle 450 ms reveals for below-the-fold content, a very slight desktop parallax on
