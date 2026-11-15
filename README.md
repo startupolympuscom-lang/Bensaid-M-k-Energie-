@@ -65,10 +65,13 @@ form includes a honeypot field against basic spam bots.
 
 ### Vercel (recommended)
 
-1. Import the GitHub repository in Vercel — the framework is detected automatically.
-2. Add the environment variables (at least `NEXT_PUBLIC_SITE_URL` and one quote-delivery option)
-   under **Project → Settings → Environment Variables**.
-3. Deploy, then attach the company's domain.
+1. Import the GitHub repository in Vercel. `vercel.json` pins the framework to **Next.js**, so the
+   project builds correctly even if it was created before the code existed (Vercel would otherwise
+   keep the "Other" static preset and serve a 404 on every page).
+2. Deploy, then attach the company's domain. **No database or storage is needed** — skip any
+   "Connect database" suggestion in the Vercel dashboard. All environment variables are optional;
+   add them later under **Project → Settings → Environment Variables** (`NEXT_PUBLIC_SITE_URL`
+   and one quote-delivery option) and redeploy.
 
 Preview deployments are automatically excluded from search engines (`robots.txt` disallows all
 when `VERCEL_ENV=preview`).
