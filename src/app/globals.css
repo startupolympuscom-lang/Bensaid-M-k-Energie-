@@ -108,6 +108,10 @@
 
 @layer base {
   html {
+    /* The brand is designed light-only. "only" stops browsers that force a
+       dark theme (Chrome auto-dark, Samsung Internet…) from inverting the
+       logos, the ribbon and the orange/teal palette. */
+    color-scheme: only light;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
     scroll-behavior: smooth;
@@ -357,13 +361,12 @@
 /* Dispagaz ecosystem (landing page + customer web app)                */
 /* ------------------------------------------------------------------ */
 
-:root {
-  --font-satoshi-stack: "Satoshi", Inter, Arial, sans-serif;
-}
-
 @layer components {
-  /* Re-points every font token of the subtree to Satoshi (headings + body). */
+  /* Re-points every font token of the subtree to Satoshi (headings + body).
+     --font-satoshi is declared on the same element by next/font/local
+     (src/app/dispagaz/layout.tsx) and already includes the fallbacks. */
   .dz-theme {
+    --font-satoshi-stack: var(--font-satoshi, Inter, Arial, sans-serif);
     --font-montserrat: var(--font-satoshi-stack);
     --font-source-sans: var(--font-satoshi-stack);
     --font-heading: var(--font-satoshi-stack);

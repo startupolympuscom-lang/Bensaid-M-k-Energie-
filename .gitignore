@@ -40,3 +40,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Satoshi (Dispagaz typeface, ITF Free Font License): downloaded at build
+# time by scripts/fetch-satoshi.mjs — the license forbids redistributing the
+# font files through a public repository.
+/src/assets/fonts/satoshi/

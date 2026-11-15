@@ -14,6 +14,13 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   poweredByHeader: false,
+  experimental: {
+    // Always compile production builds from the checked-out sources instead of
+    // reusing Turbopack's on-disk cache (restored by Vercel between builds): a
+    // cached build was seen serving an outdated stylesheet. The site builds in
+    // seconds, so the cache brings nothing worth that risk.
+    turbopackFileSystemCacheForBuild: false,
+  },
   images: {
     formats: ["image/avif", "image/webp"],
     qualities: [75, 85],
