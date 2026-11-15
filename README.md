@@ -59,6 +59,7 @@ form includes a honeypot field against basic spam bots.
 | `npm run start`     | Serve the production build                             |
 | `npm run lint`      | ESLint (Next.js core-web-vitals + TypeScript rules)    |
 | `npm run typecheck` | Generate route types and run the TypeScript compiler   |
+| `npm run fonts`     | Re-download the Satoshi web fonts (Dispagaz typeface)  |
 | `npm run format`    | Format with Prettier (Tailwind classes sorted)         |
 | `npm run check`     | Lint + typecheck + format check (use in CI)            |
 
@@ -101,6 +102,7 @@ Server Action require the Node.js server, so a purely static export is not suppo
 ├── Dispagaz *.png · Bensaid Mék 24_7 LPG Dispenser (1).png
 │                                        Original Dispagaz assets (source of truth, untouched)
 ├── public/                              Static files served as-is (currently empty)
+├── scripts/fetch-satoshi.mjs            Downloads the Satoshi web fonts before dev/build
 └── src/
     ├── app/                             Routes (App Router)
     │   ├── layout.tsx                   Root layout: fonts, metadata, skip link, JSON-LD
@@ -110,7 +112,7 @@ Server Action require the Node.js server, so a purely static export is not suppo
     │   │   ├── a-propos/page.tsx        About page
     │   │   └── contact/page.tsx         Contact & quote page
     │   ├── dispagaz/                    Dispagaz® ecosystem
-    │   │   ├── layout.tsx               Satoshi typeface (Fontshare API) for the whole subtree
+    │   │   ├── layout.tsx               Satoshi typeface (self-hosted) for the whole subtree
     │   │   ├── (site)/                  Landing page /dispagaz (dark header + footer, JSON-LD)
     │   │   ├── app/                     Customer web app /dispagaz/app (demo)
     │   │   │   ├── (auth)/              connexion · inscription · bienvenue (onboarding)
@@ -233,11 +235,14 @@ fee, reservation time, top-up limits, latency) live in `data/config.ts`.
 
 ### Typeface
 
-The Dispagaz ecosystem uses **Satoshi**. It is distributed under the ITF Free Font License, which
-does not allow sharing the font files through a public repository, so it is loaded from the
-official Fontshare API (`src/app/dispagaz/layout.tsx`) with `Inter, Arial, sans-serif` as fallback.
-To self-host it instead (allowed for your own websites), download it from fontshare.com into a
-non-public location and serve it with `next/font/local`.
+The Dispagaz ecosystem uses **Satoshi**, self-hosted with `next/font/local`
+(`src/app/dispagaz/layout.tsx`): preloaded, no third-party request at runtime, and a size-adjusted
+Arial fallback. It is distributed under the ITF Free Font License, which allows self-hosting on a
+website but not sharing the font files through a public repository, so the files are **not
+committed**: `npm run dev` and `npm run build` first download them from the official Fontshare API
+into `src/assets/fonts/satoshi/` (gitignored) with `scripts/fetch-satoshi.mjs`. Run `npm run fonts`
+to download them again. The build machine therefore needs access to `api.fontshare.com` and
+`cdn.fontshare.com` (Vercel has it by default).
 
 ## Where visual assets are stored
 
